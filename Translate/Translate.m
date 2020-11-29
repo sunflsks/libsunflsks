@@ -1,6 +1,6 @@
-#import "Translate.h"
+#import "../include/Translate.h"
 
-@implementation Translator {
+@implementation SunflsksTranslator {
     NSMutableDictionary* cache;
     NSLocale* fromLocale;
     NSLocale* toLocale;
@@ -8,7 +8,7 @@
     NSString* translatePath;
 }
 
--(Translator*)initWithFile:(NSURL*)url From:(NSLocale*)from To:(NSLocale*)to {
+-(SunflsksTranslator*)initWithFile:(NSURL*)url From:(NSLocale*)from To:(NSLocale*)to {
     self = [super init];
 
     if (self == nil || url == nil || from == nil || to == nil) {
