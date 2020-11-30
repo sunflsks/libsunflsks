@@ -94,4 +94,30 @@
 	free(buffer);
 	return ret;
 }
+
++(NSArray*)processes {
+	NSMutableString* string = [NSMutableString string];
+    char* buffer = calloc(1024, sizeof(char));
+
+    FILE* pipe = popen("ps ax | awk '{print $5}' | tail -n +2", "r");
+    if(!pipe) {
+        return nil;
+    }
+
+    while(fgets(buffer, 1024, pipe)) {
+        [string appendString:[NSString stringWithFormat:@"%s", buffer]];
+    }
+	free(buffer);
+    return [string componentsSeparatedByString:@"\n"];
+}
+
++(long long)processCount {
+	    char* buffer = calloc(500, sizeof(char));
+		FILE* pipe = popen("ps ax | awk '{print $5}' | tail -n +2 | wc -l", "r");
+
+		fgets(buffer, 500, pipe);
+
+		return atoll(buffer);
+}
+
 @end

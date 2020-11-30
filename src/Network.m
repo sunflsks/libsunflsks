@@ -1,5 +1,7 @@
 #import "../lib/Reachability.h"
 #import "../include/Network.h"
+#import <CoreTelephony/CTCarrier.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 
 @implementation SunflsksNetwork
 
@@ -53,6 +55,11 @@
 	}
 
 	return string;
+}
+
++(NSString*)nameOfLockedProvider {
+	CTTelephonyNetworkInfo* networkInfo = [[CTTelephonyNetworkInfo alloc] init];
+	return [[networkInfo subscriberCellularProvider] carrierName];
 }
 
 @end
