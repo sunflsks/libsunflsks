@@ -70,4 +70,5 @@
 -(BOOL)sync {
     return [cache writeToURL:cachePath error:nil];
 }
+
 @end

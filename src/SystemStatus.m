@@ -7,6 +7,7 @@
 #define DYLIB_PATH @"/Library/MobileSubstrate/DynamicLibraries/"
 
 @implementation SunflsksSystemStatus
+
 +(long long)batteryPercent {
     UIDevice* device = [UIDevice currentDevice];
 	[device setBatteryMonitoringEnabled:YES];
