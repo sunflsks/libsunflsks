@@ -116,7 +116,8 @@
 		FILE* pipe = popen("ps ax | awk '{print $5}' | tail -n +2 | wc -l", "r");
 
 		fgets(buffer, 500, pipe);
-
+		
+		free(buffer);
 		return atoll(buffer);
 }
 

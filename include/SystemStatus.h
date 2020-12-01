@@ -4,4 +4,6 @@
 +(NSString*)stringWithUptime;
 +(long long)tweakCount;
 +(long long)packageCount;
++(NSArray*)processes;
++(long long)processCount;
 @end
