@@ -9,5 +9,4 @@ typedef enum ProcessOutput {
 -(ProcessManager*)initWithPID:(pid_t)PID;
 -(ProcessOutput)kill;
 -(ProcessOutput)kill:(int)signal;
-@property(readonly)pid_t pid;
 @end
