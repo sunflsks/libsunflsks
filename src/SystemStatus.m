@@ -163,8 +163,8 @@ static void get_proc_list(void** buf, int* proccount) {
 			}
 
 			else if (errno == ENOMEM) {
-				if (buf != NULL) {
-					free(&buf);
+				if (*buf != NULL) {
+					free(*buf);
 				}
 			}
 		}
