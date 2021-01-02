@@ -3,8 +3,11 @@
 #include <sys/stat.h>
 #include <sys/sysctl.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define DYLIB_PATH @"/Library/MobileSubstrate/DynamicLibraries/"
+
+static void get_proc_list(void** buf, int* proccount);
 
 @implementation SunflsksSystemStatus
 
@@ -97,29 +100,118 @@
 }
 
 +(NSArray*)processes {
-	NSMutableString* string = [NSMutableString string];
-    char* buffer = calloc(1024, sizeof(char));
+	NSMutableArray* array = [NSMutableArray array];
+    void* buf;
+	int proccount;
+	
+	get_proc_list(&buf, &proccount);
+	struct kinfo_proc* proclist = (struct kinfo_proc*)buf;
 
-    FILE* pipe = popen("ps ax | awk '{print $5}' | tail -n +2", "r");
-    if(!pipe) {
-        return nil;
-    }
+	for (int i = 0; i < proccount; i++) {
+		[array addObject:[[SunflsksProcessInfo alloc] initWithProc:proclist[i].kp_proc]];
+	}
 
-    while(fgets(buffer, 1024, pipe)) {
-        [string appendString:[NSString stringWithFormat:@"%s", buffer]];
-    }
-	free(buffer);
-    return [string componentsSeparatedByString:@"\n"];
+    return array;
 }
 
 +(long long)processCount {
-	    char* buffer = calloc(500, sizeof(char));
-		FILE* pipe = popen("ps ax | awk '{print $5}' | tail -n +2 | wc -l", "r");
+		int proccount;
+		void* buf;
 
-		fgets(buffer, 500, pipe);
-		
-		free(buffer);
-		return atoll(buffer);
+		get_proc_list(&buf, &proccount);
+		free(buf);
+
+		return (long long)proccount;
+}
+
+@end
+
+static void get_proc_list(void** buf, int* proccount) {
+	size_t buffer_size = 0;
+	int err;
+	bool finished = false;
+	// MIB for getting all running processes
+	int mib[3] = {
+		CTL_KERN,
+		KERN_PROC,
+		KERN_PROC_ALL,
+	};
+	do {
+		// Divide sizeof mib by sizeof *mib (which is int) to get the total number of items in mib[]
+		err = sysctl(mib, sizeof(mib) / sizeof(int), NULL, &buffer_size, NULL, 0);
+		if (err == -1) {
+			err = errno;
+		}
+
+		else if (err == 0) {
+			*buf = malloc(buffer_size);
+			if (*buf == NULL) {
+				err = errno;
+			}
+		}
+
+		if (err == 0) {
+			err = sysctl(mib, sizeof(mib) / sizeof(int), *buf, &buffer_size, NULL, 0);
+
+			if (err == -1) {
+				err = errno;
+			}
+
+			else if (err == 0) {
+				finished = true;
+			}
+
+			else if (errno == ENOMEM) {
+				if (buf != NULL) {
+					free(&buf);
+				}
+			}
+		}
+	} while (!finished);
+
+	*proccount = buffer_size / sizeof(struct kinfo_proc);
+}
+
+@implementation SunflsksProcessInfo {
+	NSString* name;
+	pid_t pid;
+	char niceness;
+	int uptime;
+}
+
+-(SunflsksProcessInfo*)initWithProc:(struct extern_proc)proc {
+	self = [super init];
+
+	if (!self) {
+		return nil;
+	}
+
+	pid = proc.p_pid;
+	name = [NSString stringWithFormat:@"%s", proc.p_comm];
+	niceness = proc.p_nice;
+	uptime = proc.p_cpticks / sysconf(_SC_CLK_TCK);
+
+	return self;
+}
+
+-(pid_t)pid {
+	return pid;
+}
+
+-(char)niceness {
+	return niceness;
+}
+
+-(int)uptime {
+	return uptime;
+}
+
+-(NSString*)name {
+	return name;
+}
+
+-(NSString*)description {
+	return [NSString stringWithFormat:@"Name: %@, PID: %d, Niceness:%d, Uptime:%d"];
 }
 
 @end
