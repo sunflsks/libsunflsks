@@ -1,3 +1,5 @@
+#pragma once
+
 @interface SunflsksSystemStatus : NSObject
 +(long long)batteryPercent;
 +(NSString*)stringWithChargingStatus;

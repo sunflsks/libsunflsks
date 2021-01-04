@@ -1,3 +1,5 @@
+#pragma once
+
 typedef enum ProcessOutput {
     NOT_ALLOWED,
     NONEXISTENT_PID,
