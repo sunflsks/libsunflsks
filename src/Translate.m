@@ -20,6 +20,7 @@
     cachePath = url;
     translatePath = [NSString stringWithFormat:@"/translate_a/single?client=gtx&sl=%@&tl=%@&dt=t&q=", [from languageCode], [to languageCode]];
 
+    // Should probably use something like core data or sqlite for this but it will work for now
     cache = [[NSMutableDictionary alloc] initWithContentsOfFile:[url path]];
 
     if (cache && ![[cache objectForKey:@"language"] isEqualToString:[to languageCode]]) {
