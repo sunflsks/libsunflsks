@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #define DYLIB_PATH @"/Library/MobileSubstrate/DynamicLibraries/"
-
+#define DPKG_STATUS_DIR @"/var/lib/dpkg/status"
 static void get_proc_list(void** buf, int* proccount);
 
 @implementation SunflsksSystemStatus
@@ -76,27 +76,21 @@ static void get_proc_list(void** buf, int* proccount);
 }
 
 +(long long)packageCount {
-	FILE* pipe = NULL;
-	char* buffer = calloc(500, sizeof(char));
-	long long ret = 0;
+	NSFileManager* filesystem = [NSFileManager defaultManager];
+	__block long long ret = 0;
 
-	pipe = popen("/usr/bin/dpkg -l | grep ii | wc -l", "r");
-	if (!pipe) {
-		return ret;
+	if (![filesystem isReadableFileAtPath:DPKG_STATUS_DIR]) {
+		return -1;
 	}
-	
-	fgets(buffer, 500, pipe);
-	if (!buffer) {
-		return ret;
-	}
-	
-	if (pclose(pipe) != 0) {
-		free(buffer);
-		return ret;
-	}
-	
-	ret = atoll(buffer);
-	free(buffer);
+
+	NSString* file = [NSString stringWithContentsOfFile:DPKG_STATUS_DIR encoding:NSUTF8StringEncoding error:NULL];
+
+	[file enumerateLinesUsingBlock:^void(NSString* line, BOOL* stop) {
+		if ([line hasPrefix:@"Package: "]) {
+			ret++;
+		}
+	}];
+
 	return ret;
 }
 
