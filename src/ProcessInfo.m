@@ -27,14 +27,6 @@
 	return pid;
 }
 
--(char)niceness {
-	return niceness;
-}
-
--(int)uptime {
-	return uptime;
-}
-
 -(NSString*)name {
 	return name;
 }
