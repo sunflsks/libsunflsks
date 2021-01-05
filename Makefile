@@ -5,7 +5,7 @@ ARCHS = arm64 arm64e
 LIBRARY_NAME = libsunflsks
 libsunflsks_FILES = $(wildcard src/*.m lib/*.m)
 libsunflsks_CFLAGS = -fobjc-arc -Wno-deprecated
-libsunflsks_INSTALL_PATH = /usr/local/lib
+libsunflsks_INSTALL_PATH = /usr/lib
 libsunflsks_FRAMEWORKS = SystemConfiguration
 
 include $(THEOS_MAKE_PATH)/library.mk
