@@ -1,6 +1,6 @@
 Package: us.sudhip.libsunflsks
 Name: libsunflsks
-Version: 0.0.11
+Version: 0.0.12
 Architecture: iphoneos-arm
 Description: Shared code between projects
 Maintainer: Sudhip
