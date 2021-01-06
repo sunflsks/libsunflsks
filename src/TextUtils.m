@@ -7,6 +7,7 @@
 #define DOWN 2
 #define MID 3
 
+// Zalgo chars thanks to https://stackoverflow.com/questions/26927419/zalgo-text-in-java by MihaiC
 unichar zalgos[] =
 {
     0x030d, /*     Ì?     */0x030e, /*     ÌŽ     */0x0304, /*     Ì„     */0x0305, /*     Ì…     */
