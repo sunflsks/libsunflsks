@@ -1,5 +1,5 @@
 #pragma once
-
+#include "FileInfo.h"
 typedef enum ProcessOutput {
     NOT_ALLOWED,
     NONEXISTENT_PID,
@@ -7,8 +7,9 @@ typedef enum ProcessOutput {
     SUCCESS
 } ProcessOutput;
 
-@interface ProcessManager : NSObject
--(ProcessManager*)initWithPID:(pid_t)PID;
+@interface SunflsksProcessManager : NSObject
+-(SunflsksProcessManager*)initWithPID:(pid_t)PID;
 -(ProcessOutput)kill;
 -(ProcessOutput)kill:(int)signal;
+-(NSArray<SunflsksFileInfo*>*)openFileDescriptors;
 @end

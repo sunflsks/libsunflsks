@@ -1,15 +1,18 @@
 #include "../include/ProcessManager.h"
 #include "../include/ProcessInfo.h"
+#include "../include/FileInfo.h"
 #include <signal.h>
 #include <errno.h>
+#include "../lib/libproc.h"
+#include "../lib/proc_info.h"
 
 static SunflsksProcessInfo* get_info_from_pid(pid_t pid);
 
-@implementation ProcessManager {
+@implementation SunflsksProcessManager {
     SunflsksProcessInfo* process_info;
 }
 
--(ProcessManager*)initWithPID:(pid_t)pid {
+-(SunflsksProcessManager*)initWithPID:(pid_t)pid {
     self = [super init];
 
     if (!self) {
@@ -37,7 +40,7 @@ static SunflsksProcessInfo* get_info_from_pid(pid_t pid);
                 output = NONEXISTENT_PID;
                 break;
         }
-    }    
+    }
 
     else {
         output = SUCCESS;
@@ -67,9 +70,27 @@ static SunflsksProcessInfo* get_info_from_pid(pid_t pid);
 
     else {
         output = SUCCESS;
-    }    
+    }
 
     return output;
+}
+
+-(NSArray<SunflsksFileInfo*>*)openFileDescriptors {
+    NSMutableArray* ret = [NSMutableArray array];
+    size_t buffersize = proc_pidinfo(process_info.pid, PROC_PIDLISTFDS, 0, NULL, 0);
+    void* buffer = calloc(buffersize, 1);
+
+    if (proc_pidinfo(process_info.pid, PROC_PIDLISTFDS, 0, buffer, buffersize) == -1) {
+        return nil;
+    }
+
+    struct proc_fdinfo* fds = (struct proc_fdinfo*)buffer;
+    int fd_count = buffersize / PROC_PIDLISTFD_SIZE;
+    for (int i = 0; i < fd_count; i++) {
+        [ret addObject: [[SunflsksFileInfo alloc] initWithProcFdInfo:fds[i] pid:process_info.pid]];
+    }
+
+    return ret;
 }
 
 @end
