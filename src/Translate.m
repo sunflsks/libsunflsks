@@ -18,7 +18,11 @@
     fromLocale = from;
     toLocale = to;
     cachePath = url;
-    translatePath = [NSString stringWithFormat:@"/translate_a/single?client=gtx&sl=%@&tl=%@&dt=t&q=", [from languageCode], [to languageCode]];
+    translatePath = [NSString
+                        stringWithFormat:@"/translate_a/single?client=gtx&sl=%@&tl=%@&dt=t&q=",
+                        [from languageCode],
+                        [to languageCode]
+                    ];
 
     // Should probably use something like core data or sqlite for this but it will work for now
     cache = [[NSMutableDictionary alloc] initWithContentsOfFile:[url path]];
@@ -48,9 +52,16 @@
     if ([cache objectForKey:stringToTranslate] != nil) {
         return [cache objectForKey:stringToTranslate];
     }
-    
-    NSURL* translateURL = [[NSURL alloc] initWithScheme:@"https" host:@"translate.googleapis.com" path:[NSString stringWithFormat:@"%@%@", translatePath, stringToTranslate]];
-    
+
+    NSURL* translateURL = [[NSURL alloc]
+                            initWithScheme:@"https"
+                            host:@"translate.googleapis.com"
+                            path:[NSString stringWithFormat:@"%@%@",
+                                    translatePath,
+                                    stringToTranslate
+                            ]
+                        ];
+
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:translateURL];
     [request setHTTPMethod:@"GET"];
@@ -61,8 +72,15 @@
     if (data == nil) {
         return nil;
     }
-    
-    NSString* translatedString = [[[[NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil] objectAtIndex:0] objectAtIndex:0] objectAtIndex:0];
+
+    NSString* translatedString = [[[[NSJSONSerialization
+                                        JSONObjectWithData:data
+                                        options:kNilOptions
+                                        error:nil]
+                                        objectAtIndex:0]
+                                    objectAtIndex:0]
+                                objectAtIndex:0
+                            ];
     [cache setObject:translatedString forKey:stringToTranslate];
     [self sync];
     return translatedString;

@@ -75,7 +75,11 @@ unichar zalgos[] =
     NSMutableString* ret = [NSMutableString stringWithCapacity:[input length] * craziness * 2];
 
     for (NSUInteger i = 0; i < [input length]; i++) {
-        NSString* zalgoChar = [SunflsksTextUtils zalgoChar:[input substringWithRange:NSMakeRange(i, 1)] craziness:craziness];
+        NSString* zalgoChar = [SunflsksTextUtils
+            zalgoChar:[input substringWithRange:NSMakeRange(i, 1)]
+            craziness:craziness
+        ];
+
         [ret appendString:zalgoChar];
     }
 

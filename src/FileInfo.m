@@ -80,8 +80,10 @@ static NSString* get_socket_info_from_fd(struct socket_fdinfo info);
 
 -(NSString*)description {
     return [_path isEqualToString:@"Unknown type"]
-            ? _path
-            :[NSString stringWithFormat:@"%@ with fd %d with pid %d and type %d", _path, _fd, _pid, _type];
+    ? _path
+    : [NSString
+        stringWithFormat:@"%@ with fd %d with pid %d and type %d", _path, _fd, _pid, _type
+    ];
 }
 
 @end
@@ -93,7 +95,11 @@ static NSString* get_socket_info_from_fd(struct socket_fdinfo info) {
         // TCP/IP socket
         case SOCKINFO_TCP: {
             struct in_sockinfo in_sock = info.psi.soi_proto.pri_tcp.tcpsi_ini;
-            ret = [NSString stringWithFormat:@"TCP socket: [%d -> %d]", in_sock.insi_lport, in_sock.insi_fport];
+            ret = [NSString
+                    stringWithFormat:@"TCP socket: [%d -> %d]",
+                    in_sock.insi_lport,
+                    in_sock.insi_fport
+                ];
         }
         break;
 

@@ -32,7 +32,13 @@
 }
 
 -(NSString*)description {
-	return [NSString stringWithFormat:@"Name: %@, PID: %d, Niceness:%d, Uptime:%d", name, pid, niceness, uptime];
+	return [NSString
+			stringWithFormat:@"Name: %@, PID: %d, Niceness:%d, Uptime:%d",
+			name,
+			pid,
+			niceness,
+			uptime
+		];
 }
 
 @end

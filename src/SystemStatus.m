@@ -57,14 +57,22 @@ static void get_proc_list(void** buf, int* proccount);
 	NSMutableString* string = [NSMutableString string];
 	struct timespec uptime;
 	clock_gettime(CLOCK_MONOTONIC_RAW, &uptime);
-	
-	[string appendString:[NSString stringWithFormat:@"%lu days, %lu hours, %lu minutes, %lu seconds", (uptime.tv_sec % (86400 * 30)) / 86400, (uptime.tv_sec % 86400) / 3600, (uptime.tv_sec % 3600) / 60, uptime.tv_sec % 60]];
+
+	[string appendString:[NSString
+							stringWithFormat:@"%lu days, %lu hours, %lu minutes, %lu seconds",
+							(uptime.tv_sec % (86400 * 30)) / 86400,
+							(uptime.tv_sec % 86400) / 3600,
+							(uptime.tv_sec % 3600) / 60,
+							uptime.tv_sec % 60]
+						];
 	return string;
 }
 
 +(long long)tweakCount {
 	long long dylibCount = 0;
-	NSArray* dylibs = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:DYLIB_PATH error:nil];
+	NSArray* dylibs = [[NSFileManager defaultManager]
+						contentsOfDirectoryAtPath:DYLIB_PATH error:nil
+					];
 
 	for (NSURL* url in dylibs) {
 		if ([[url pathExtension] isEqualToString:@"dylib"]) {
@@ -83,7 +91,11 @@ static void get_proc_list(void** buf, int* proccount);
 		return -1;
 	}
 
-	NSString* file = [NSString stringWithContentsOfFile:DPKG_STATUS_DIR encoding:NSUTF8StringEncoding error:NULL];
+	NSString* file = [NSString
+						stringWithContentsOfFile:DPKG_STATUS_DIR
+						encoding:NSUTF8StringEncoding
+						error:NULL
+					];
 
 	[file enumerateLinesUsingBlock:^void(NSString* line, BOOL* stop) {
 		if ([line hasPrefix:@"Package: "]) {
@@ -98,7 +110,7 @@ static void get_proc_list(void** buf, int* proccount);
 	NSMutableArray* array = [NSMutableArray array];
     void* buf;
 	int proccount;
-	
+
 	get_proc_list(&buf, &proccount);
 	struct kinfo_proc* proclist = (struct kinfo_proc*)buf;
 

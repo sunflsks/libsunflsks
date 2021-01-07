@@ -13,11 +13,20 @@
 		return FALSE;
 	}
 
-	NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:URL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:4];
+	NSMutableURLRequest* request = [NSMutableURLRequest
+									requestWithURL:URL
+									cachePolicy:NSURLRequestReloadIgnoringCacheData
+									timeoutInterval:4
+								];
+
 	[request setHTTPMethod: @"HEAD"];
 	NSURLResponse* response;
 	NSError* error;
-	NSData* data = [NSURLConnection sendSynchronousRequest: request returningResponse: &response error: &error];
+	NSData* data = [NSURLConnection
+					sendSynchronousRequest: request
+					returningResponse: &response
+					error: &error
+				];
 
 	if (data) {
 		return TRUE;
