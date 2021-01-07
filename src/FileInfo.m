@@ -56,6 +56,7 @@ static NSString* get_socket_info_from_fd(struct socket_fdinfo info);
 
             _path = [NSString stringWithFormat:@"UNIX Pipe: %llu", pipe_info.pipeinfo.pipe_handle];
         }
+        break;
 
         default:
             _type = Unknown;
