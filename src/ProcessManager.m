@@ -88,7 +88,7 @@ static SunflsksProcessInfo* get_info_from_pid(pid_t pid);
     int fd_count = buffersize / PROC_PIDLISTFD_SIZE;
     for (int i = 0; i < fd_count; i++) {
         [ret addObject:
-            [[SunflsksFileInfo alloc] initWithProcFdInfo:fds[i] pid:process_info.pid];
+            [[SunflsksFileInfo alloc] initWithProcFdInfo:fds[i] pid:process_info.pid]
         ];
     }
 
